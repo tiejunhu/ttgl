@@ -7,6 +7,7 @@
 		"build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html"
 	},
 	"dependencies": {
+		"@antv/g2plot": "^2.4.29",
 		"highlight.js": "11.5.1",
 		"react": "17.0.2",
 		"react-dom": "17.0.2"

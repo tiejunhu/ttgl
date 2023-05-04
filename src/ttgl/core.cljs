@@ -3,10 +3,9 @@
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
    [ttgl.events :as events]
+   [ttgl.subs]
    [ttgl.views :as views]
-   [ttgl.config :as config]
-   ))
-
+   [ttgl.config :as config]))
 
 (defn dev-setup []
   (when config/debug?

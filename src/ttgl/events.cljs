@@ -1,52 +1,64 @@
 (ns ttgl.events
   (:require
-   [day8.re-frame.tracing :refer-macros [fn-traced defn-traced]]
+   [day8.re-frame.http-fx]
    [re-frame.core :as rc]
    [ttgl.db :as db]
    [ttgl.notion :as notion]))
 
-(defn-traced initialize-db []
+(defn initialize-db []
   (rc/dispatch-sync [:evt.db/initialize]))
 
-(defn-traced http-get-all []
+(defn http-get-all []
   (rc/dispatch [:evt.http/get-database])
   (rc/dispatch [:evt.http/list-all-items]))
 
 (rc/reg-event-fx
  :evt.http/get-database
- (fn-traced [_ _]
-            {:fx [[:http-xhrio (merge {:on-success [:evt.http/get-database-success]
-                                       :on-failure [:evt.http/get-database-failure]}
-                                      (notion/notion-get-database))]]}))
+ (fn [_ _]
+   {:fx [[:http-xhrio (merge {:on-success [:evt.http/get-database-success]
+                              :on-failure [:evt.http/get-database-failure]}
+                             (notion/notion-get-database))]]}))
 
 (rc/reg-event-fx
  :evt.http/list-all-items
- (fn-traced [_ _]
-            {:fx [[:http-xhrio (merge {:on-success [:evt.http/get-items-success]
-                                       :on-failure [:evt.http/get-items-failure]}
-                                      (notion/notion-list-all))]]}))
+ (fn [_ _]
+   {:fx [[:http-xhrio (merge {:on-success [:evt.http/get-items-success]
+                              :on-failure [:evt.http/get-items-failure]}
+                             (notion/notion-list-all))]]}))
 
 (rc/reg-event-fx
  :evt.http/get-database-success
- (fn-traced [_ [_ database]]
-            {:fx [[:dispatch [:evt.db/set-database (db/parse-incoming-database database)]]]}))
+ (fn [_ [_ database]]
+   {:fx [[:dispatch [:evt.db/set-database (db/parse-incoming-database database)]]]}))
 
 (rc/reg-event-fx
  :evt.http/get-items-success
- (fn-traced [_ [_ list]]
-            {:fx [[:dispatch [:evt.db/set-items (db/parse-incoming-items list)]]]}))
+ (fn [_ [_ list]]
+   {:fx [[:dispatch [:evt.db/set-items (db/parse-incoming-items list)]]]}))
 
 (rc/reg-event-db
  :evt.db/initialize
- (fn-traced [_ _]
-            db/default-db))
+ (fn [_ _]
+   db/default-db))
 
 (rc/reg-event-db
  :evt.db/set-database
- (fn-traced [db [_ new-value]]
-            (assoc db :database new-value)))
+ (fn [db [_ new-value]]
+   (assoc db :database new-value)))
 
 (rc/reg-event-db
  :evt.db/set-items
- (fn-traced [db [_ new-value]]
-            (assoc db :items new-value)))
+ (fn [db [_ new-value]]
+   (assoc db :items new-value)))
+
+(rc/reg-event-db
+ :evt.db/add-filter
+ (fn [db [_ filter]]
+   (update db :filters (fn [filters]
+                         (assoc filters (keyword filter) true)))))
+
+(rc/reg-event-db
+ :evt.db/remove-filter
+ (fn [db [_ filter]]
+   (update db :filters (fn [filters]
+                         (assoc filters (keyword filter) false)))))
