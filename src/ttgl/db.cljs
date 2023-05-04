@@ -2,7 +2,8 @@
 
 (def default-db {:database nil
                  :items nil
-                 :filters nil})
+                 :filters nil
+                 :active-tab :ecp})
 
 (def ^:private wood-fiber {:id "wood" :name "Wood"})
 
@@ -35,13 +36,11 @@
           ep (get-number (:EP properties))
           vp (get-number (:VP properties))
           vl (get-number (:VL properties))
-          pos (get-select-option-id-name (:Pos properties))
           fiber (get-select-option-id-name (:Fiber properties))]
       {:id (:id item)
        :name (get-title-text (:Name properties))
        :construct (get-select-option-id-name (:Construct properties))
        :brand (get-select-option-id-name (:Brand properties))
-       :pos pos
        :fiber (if (:id fiber) fiber wood-fiber)
        :ec ec
        :ep ep
@@ -60,6 +59,5 @@
 (defn parse-incoming-database [database]
   (let [properties (:properties database)]
     {:construct (get-select-option-id-names (:Construct properties))
-     :pos (get-select-option-id-names (:Pos properties))
      :fiber (conj (get-select-option-id-names (:Fiber properties)) wood-fiber)
      :brand (get-select-option-id-names (:Brand properties))}))

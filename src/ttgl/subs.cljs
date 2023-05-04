@@ -8,16 +8,15 @@
    (get-in db [:database])))
 
 (rc/reg-sub
+ :sub.ui/active-tab
+ (fn [db]
+   (get-in db [:active-tab])))
+
+(rc/reg-sub
  :sub.data/sorted-construct
  :<- [:sub.data/database]
  (fn [database _]
    (sort-by :name (:construct database))))
-
-(rc/reg-sub
- :sub.data/sorted-fiber-pos
- :<- [:sub.data/database]
- (fn [database _]
-   (sort-by :name (:pos database))))
 
 (rc/reg-sub
  :sub.data/sorted-fiber-type
@@ -53,10 +52,9 @@
    (filter (fn [i]
              (let [brand-filtered? (filtered? filters :brand i)
                    construct-filtered? (filtered? filters :construct i)
-                   pos-filtered? (filtered? filters :pos i)
                    fiber-filtered? (filtered? filters :fiber i)]
                ;; any of the filters are true, return false to filter out item
-               (not (or brand-filtered? construct-filtered? pos-filtered? fiber-filtered?)))) items)))
+               (not (or brand-filtered? construct-filtered? fiber-filtered?)))) items)))
 
 (rc/reg-sub
  :sub.data/items-data
@@ -65,18 +63,16 @@
    (map (fn [i]
           (let [brand (:name (:brand i))
                 construct (:name (:construct i))
-                pos (:name (:pos i))
                 fiber (:name (:fiber i))
                 chinese-name (:chinese-name i)
                 name (:name i)]
             {:name (:name i)
              :full-name (str brand " " name)
              :full-chinese-name (if chinese-name (str brand " " chinese-name) "")
-             :full-construct (str construct " "  pos " " fiber)
+             :full-construct (str construct " " fiber)
              :chinese-name chinese-name
              :brand brand
              :construct construct
-             :pos pos
              :fiber fiber
              :ec (:ec i)
              :ep (:ep i)

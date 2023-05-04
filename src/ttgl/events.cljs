@@ -62,3 +62,8 @@
  (fn [db [_ filter]]
    (update db :filters (fn [filters]
                          (assoc filters (keyword filter) false)))))
+
+(rc/reg-event-db
+ :evt.ui/set-active-tab
+ (fn [db [_ tab]]
+   (assoc db :active-tab tab)))
