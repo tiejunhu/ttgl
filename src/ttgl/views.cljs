@@ -8,7 +8,7 @@
    [re-frame.core :as rc]
    [reagent.core :as reagent]))
 
-(def ^:private left-drawer-width 160)
+(def ^:private left-drawer-width 180)
 
 (defn- left-drawer-constructs [sub-key filters]
   (let [constructs (rc/subscribe [sub-key])]
@@ -28,13 +28,19 @@
 
 (defn- left-drawer []
   (let [filters (rc/subscribe [:sub.data/filters])]
-    [:aside {:class "menu" :style {:width (str left-drawer-width "px")}}
-     [:p {:class "menu-label"} "Brands"]
-     (left-drawer-constructs :sub.data/sorted-brands @filters)
-     [:p {:class "menu-label"} "Construction"]
-     (left-drawer-constructs :sub.data/sorted-construct @filters)
-     [:p {:class "menu-label"} "Fiber Type"]
-     (left-drawer-constructs :sub.data/sorted-fiber-type @filters)]))
+    [:<> [:div {:class "card mb-4" :style {:width (str left-drawer-width "px")}}
+          [:div {:class "card-content"}
+           [:div {:class "content is-size-7"}
+            "Data are collected from " [:a {:href "https://ttgearlab.com/category/report/" :target "_blank"} "TTGEARLAB's Reports"] ", all the credit goes to " [:a {:href "https://ttgearlab.com/" :target "_blank"} "TTGEARLAB"] "."]]]
+     [:aside {:class "menu" :style {:width (str left-drawer-width "px")}}
+      [:p {:class "menu-label"} "Brands"]
+      (left-drawer-constructs :sub.data/sorted-brands @filters)
+      [:p {:class "menu-label"} "Construction"]
+      (left-drawer-constructs :sub.data/sorted-construct @filters)
+      [:p {:class "menu-label"} "Fiber Type"]
+      (left-drawer-constructs :sub.data/sorted-fiber-type @filters)]
+     [:div {:class "mt-4 is-flex is-justify-content-center"}
+      [:iframe {:src "https://ghbtns.com/github-btn.html?user=tiejunhu&repo=ttgl&type=star&count=true" :frameborder "0" :scrolling "0" :width "70" :height "20" :title "GitHub"}]]]))
 
 (defn- loading-panel []
   [:div {:style {:display "flex"
@@ -230,7 +236,7 @@
 
 (defn- main-view []
   [:div {:class "columns px-3 pt-3"}
-   [:div {:class "column is-narrow"}
+   [:div {:class "column is-narrow pr-0"}
     [left-drawer]]
    [:div {:class "column"}
     [tabs]
