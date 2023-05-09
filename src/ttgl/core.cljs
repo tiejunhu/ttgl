@@ -1,6 +1,7 @@
 (ns ttgl.core
   (:require
-   [reagent.dom :as rdom]
+   ;; [reagent.dom :as rdom]
+   [reagent.dom.client :as rclient]
    [re-frame.core :as re-frame]
    [ttgl.events :as events]
    [ttgl.subs]
@@ -13,9 +14,9 @@
 
 (defn ^:dev/after-load mount-root []
   (re-frame/clear-subscription-cache!)
-  (let [root-el (.getElementById js/document "app")]
-    (rdom/unmount-component-at-node root-el)
-    (rdom/render [views/main-panel] root-el)))
+  (let [root-el (.getElementById js/document "app")
+        root (rclient/create-root root-el)]
+    (rclient/render root [views/main-panel])))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (defn init []

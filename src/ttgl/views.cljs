@@ -35,7 +35,7 @@
       [:p {:class "menu-label"} "Fiber Type"]
       (left-drawer-constructs :sub.data/sorted-fiber-type @filters)]
      [:div {:class "mt-4 is-flex is-justify-content-center"}
-      [:iframe {:src "https://ghbtns.com/github-btn.html?user=tiejunhu&repo=ttgl&type=star&count=true" :frameborder "0" :scrolling "0" :width "70" :height "20" :title "GitHub"}]]]))
+      [:iframe {:src "https://ghbtns.com/github-btn.html?user=tiejunhu&repo=ttgl&type=star&count=true" :frameBorder "0" :scrolling "0" :width "70" :height "20" :title "GitHub"}]]]))
 
 (defn- loading-panel []
   [:div {:style {:display "flex"
